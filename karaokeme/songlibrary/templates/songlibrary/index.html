@@ -1,0 +1,100 @@
+{% extends "administration/header.html" %}
+{% block content %}
+
+<!-- Format table -->
+<style>
+* {
+  box-sizing: border-box;
+}
+
+#myInput {
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+
+#myTable {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 18px;
+}
+
+#myTable th, #myTable td {
+  text-align: left;
+  padding: 12px;
+}
+
+#myTable tr {
+  border-bottom: 1px solid #ddd;
+}
+
+#myTable tr.header, #myTable tr:hover {
+  background-color: #f1f1f1;
+}
+</style>
+<!-- Display messages from views -->
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+<h2>Song Library</h2>
+    <input type="text" id="myInput" onkeyup="filterSongs()" placeholder="Search song title or artist..">
+        <table class="table" id="myTable">
+            <tr>
+                <th> Title </th>
+                <th> Artist </th>
+            </tr>
+            <!-- Show all the songs -->
+            {% for song in object_list %}
+            <tr>
+                <td> {{ song.song_title }} </td>
+                <td> {{song.artist}} </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Filter Function -->
+        <script>
+          function filterSongs() {
+            var input, filter, table, tr, td, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              //both title and artist can be filtered
+              td = tr[i].getElementsByTagName("td")[0];
+              tx = tr[i].getElementsByTagName("td")[1];
+              if (td || tx) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || tx.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }       
+            }
+          }
+      </script>
+
+<!-- Pagination -->
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="?page={{ object_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

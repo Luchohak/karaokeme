@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>KaraokeMe</title>
+	<meta charset="utf-8" />
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}" type = "text/css"/>
+	<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+	
+	<style type="text/css">
+		html,
+		body {
+		  height:100%
+		}
+	</style>
+</head>
+
+<body class="body" style="background-color:#f6f6f6">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+<div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/songlibrary">KaraokeMe</a>
+    </div>
+    <ul class="nav navbar-nav">
+      {% if request.user.is_authenticated %}
+      <li><a href="/songlibrary/">Songs</a></li>
+      <li><a href="/petition/request">Make Petition</a></li>
+      <li><a href="/petition/request-list">Petition List</a></li>
+        {% else %}
+        <li><a href="/songlibrary/">Songs</a></li>
+        {% endif %}
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if not request.user.is_authenticated %}
+      <li> <a href="/administration/register"><span></span> Register</a></li>
+      <li> <a href="/administration/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% else %}
+      <li> <a href="/administration/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+	<div class='container-fluid'>
+    <div class="col-sm-6 col-md-8 col-lg-10">
+		<div class='jumbotron'>
+    </br>
+		   {% block content %}
+		   {% endblock %}	
+      </div>
+    </div>
+	</div>
+
+</body>
+</html>

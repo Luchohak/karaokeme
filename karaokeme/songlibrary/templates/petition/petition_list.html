@@ -1,0 +1,64 @@
+{% extends "administration/header.html" %}
+{% block content %}
+    <!-- Display the messages generated in the views -->
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% if request.user.is_staff %}    
+<h2> Petition List </h2>
+{% else %}
+<h2> Petitions order </h2>
+{% endif %}
+
+<table class="table">
+    <tr>
+        <!-- Only the admin and the song manager can see all the information from the petitions and can delete them -->
+        {% if request.user.is_staff %}
+        <th> Title </th>
+        <th> Artist </th>
+        <th> Performers </th>
+        <th> Table </th>
+        <th> Date </th>
+        <!-- Normal users only see the performers and the table -->
+        {% else %}
+        <th> Performers </th>
+        <th> Table </th>
+        {% endif %}
+
+    </tr>
+    <!-- Show all the petitions -->
+    {% for petition in object_list %}
+    <tr>
+            {% if request.user.is_staff %}
+            <td>{{ petition.song_title }} </td>
+            <td>{{petition.artist}} </td>
+            <td>{{petition.performers}} </td>
+            <td>{{petition.table}} </td>
+            <td>{{petition.date}} </td>
+            <td><a href="/petition/{{petition.id}}/delete" class="btn btn-danger"> Delete </a></td>
+            {% else %}
+            <td>{{petition.performers}} </td>
+            <td>{{petition.table}} </td>
+            {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Pagination -->
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="?page={{ object_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}
